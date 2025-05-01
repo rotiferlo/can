@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-bg-color: #f7f7f7;
+            --text-color: #333;
+            --accent-color: #4a4a4a;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--main-bg-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .wave-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: var(--main-bg-color);
+            overflow: hidden;
+        }
+
+        .line {
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(74, 74, 74, 0.4) 50%, 
+                transparent 100%);
+            animation: waveLine 15s infinite ease-in-out;
+            transform-origin: center;
+            box-shadow: 0 0 12px rgba(74, 74, 74, 0.2);
+        }
+
+        @keyframes waveLine {
+            0% {
+                transform: translateX(-100%) scaleY(1);
+            }
+            25% {
+                transform: translateX(-50%) scaleY(1.5);
+            }
+            50% {
+                transform: translateX(0%) scaleY(1);
+            }
+            75% {
+                transform: translateX(50%) scaleY(1.5);
+            }
+            100% {
+                transform: translateX(100%) scaleY(1);
+            }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.03);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Noto Serif JP', serif;
+            font-weight: 200;
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.2em;
+            letter-spacing: 0.1em;
+        }
+
+        .form-group {
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: #fff;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1em;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        #timer {
+            text-align: center;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1.2em;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: rgba(74, 74, 74, 0.03);
+            border-radius: 2px;
+            letter-spacing: 0.1em;
+        }
+
+        #willContent {
+            margin-top: 30px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            white-space: pre-wrap;
+            display: none;
+            font-family: 'Noto Sans JP', monospace;
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover::after {
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #willContent.visible {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="wave-bg">
+        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+            <path fill="#4a4a4a" fill-opacity="0.1" d="M0,160L48,165.3C96,171,192,181,288,181.3C384,181,480,171,576,165.3C672,160,768,160,864,165.3C960,171,1056,181,1152,176C1248,171,1344,149,1392,138.7L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z">
+                <animate attributeName="d" dur="20s" repeatCount="indefinite" values="
+                    M0,160L48,165.3C96,171,192,181,288,181.3C384,181,480,171,576,165.3C672,160,768,160,864,165.3C960,171,1056,181,1152,176C1248,171,1344,149,1392,138.7L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z;
+                    M0,160L48,154.7C96,149,192,139,288,133.3C384,128,480,128,576,133.3C672,139,768,149,864,154.7C960,160,1056,160,1152,154.7C1248,149,1344,139,1392,133.3L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z;
+                    M0,160L48,165.3C96,171,192,181,288,181.3C384,181,480,171,576,165.3C672,160,768,160,864,165.3C960,171,1056,181,1152,176C1248,171,1344,149,1392,138.7L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
+                />
+            </path>
+        </svg>
+    </div>
+    <div class="background-animation">
+        <script>
+            // 創建多條移動的線
+            for (let i = 0; i < 12; i++) {
+                const line = document.createElement('div');
+                line.className = 'line';
+                line.style.animationDelay = `${i * 1.5}s`;
+                line.style.opacity = Math.random() * 0.4 + 0.3;
+                line.style.top = `${i * 8 + Math.random() * 4}%`;
+                document.querySelector('.background-animation').appendChild(line);
+            }
+        </script>
+    </div>
+    <div class="container">
+        <h1>搜 索</h1>
+        <div class="form-group">
+            <label for="willId">遺囑編號</label>
+            <input type="text" id="willId" placeholder="請輸入遺囑編號...">
+        </div>
+        <button id="checkButton">搜索遺囑</button>
+        <div id="timer"></div>
+        <div id="willContent"></div>
+        <div class="back-link">
+            <a href="AIindex.html">返回設定</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai"></script>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('checkButton').addEventListener('click', checkWill);
+        // 添加顯示動畫
+        const willContent = document.getElementById('willContent');
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'style' && willContent.style.display === 'block') {
+                    willContent.classList.add('visible');
+                }
+            });
+        });
+        observer.observe(willContent, { attributes: true, attributeFilter: ['style'] });
+    </script>
+</body>
+</html>
